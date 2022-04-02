@@ -5,6 +5,12 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    for (let i = 0; i < count; i++) {
+        const tagElement = document.createElement(tag);
+        const tagContent = document.createTextNode(content);
+        tagElement.appendChild(tagContent);
+        document.body.append(tagElement);
+    }
 }
 
 /*
@@ -15,6 +21,19 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
+    function generateBranch(count, lvl) {
+        let tree = document.createElement('div');
+        tree.classList = `item_${lvl}`;
+        if (lvl < level) {
+            for (let i = 0; i < count; i++) {
+                tree.appendChild(generateBranch(childrenCount, lvl + 1));
+            }
+        }
+
+        return tree;
+    }
+
+    return generateBranch(childrenCount, 1);
 }
 
 /*
@@ -26,4 +45,27 @@ export function generateTree(childrenCount, level) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function replaceNodes() {
+    function generateBranch(count, lvl) {
+        let tree = document.createElement('div');
+        tree.classList = `item_${lvl}`;
+        if (lvl < 3) {
+            for (let i = 0; i < count; i++) {
+                tree.appendChild(generateBranch(2, lvl + 1));
+            }
+        }
+
+        return tree;
+    }
+
+    let tree = generateBranch(2, 1);
+
+    tree.childNodes.forEach((element) => {
+        if (element.className == 'item_2') {
+            let section = document.createElement('SECTION');
+            section.classList.add('item_2');
+            section.innerHTML = element.innerHTML;
+            element.replaceWith(section);
+        }
+    });
+    return tree;
 }
